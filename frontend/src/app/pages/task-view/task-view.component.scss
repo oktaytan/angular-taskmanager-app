@@ -132,6 +132,14 @@
   font-size: 2rem;
   font-weight: 900;
   cursor: pointer;
+  transition: background-color 0.25s ease-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    background-color: darken($primary, 10);
+  }
 
   &:focus,
   &:active {

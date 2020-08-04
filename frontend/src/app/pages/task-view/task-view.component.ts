@@ -1,6 +1,8 @@
-import { TaskService } from "./../../task.service";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
+import { List } from "./../../models/list.model";
+import { Task } from "./../../models/task.model";
+import { TaskService } from "./../../task.service";
 
 @Component({
   selector: "app-task-view",
@@ -8,8 +10,8 @@ import { ActivatedRoute, Params } from "@angular/router";
   styleUrls: ["./task-view.component.scss"],
 })
 export class TaskViewComponent implements OnInit {
-  lists: any[];
-  tasks: any[];
+  lists: List[];
+  tasks: Task[];
 
   constructor(
     private taskService: TaskService,
@@ -17,14 +19,27 @@ export class TaskViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe((params: Params) => {
-      this.taskService.getTasks(params.listId).subscribe((tasks: any[]) => {
-        this.tasks = tasks;
-      });
-    });
+    this.getAllTasks();
 
-    this.taskService.getLists().subscribe((lists: any[]) => {
+    this.taskService.getLists().subscribe((lists: List[]) => {
       this.lists = lists;
+    });
+  }
+
+  getAllTasks() {
+    if (this.route.snapshot.params.listId) {
+      this.route.params.subscribe((params: Params) => {
+        this.taskService.getTasks(params.listId).subscribe((tasks: Task[]) => {
+          this.tasks = tasks;
+        });
+      });
+    }
+  }
+
+  onTaskClick(task: Task) {
+    // We want to set the task to completed
+    this.taskService.complete(task).subscribe(() => {
+      task.completed = !task.completed;
     });
   }
 }

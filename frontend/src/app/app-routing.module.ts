@@ -1,3 +1,4 @@
+import { NewTaskComponent } from "./pages/new-task/new-task.component";
 import { NewListComponent } from "./pages/new-list/new-list.component";
 import { TaskViewComponent } from "./pages/task-view/task-view.component";
 import { NgModule } from "@angular/core";
@@ -8,6 +9,7 @@ const routes: Routes = [
   { path: "new-list", component: NewListComponent },
   { path: "lists", component: TaskViewComponent },
   { path: "lists/:listId", component: TaskViewComponent },
+  { path: "lists/:listId/new-task", component: NewTaskComponent },
 ];
 
 @NgModule({

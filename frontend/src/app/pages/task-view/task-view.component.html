@@ -23,11 +23,11 @@
       </h1>
 
       <!-- Tasks -->
-      <div class="task" *ngFor="let task of tasks">
+      <div class="task" *ngFor="let task of tasks" (click)="onTaskClick(task)" [ngClass]="{completed: task.completed}">
         <p class="task-text">{{ task.title }}</p>
       </div>
 
-      <button class="circle-add-button">+</button>
+      <button class="circle-add-button" routerLink="./new-task">+</button>
     </div>
 
   </div>
