@@ -1,14 +1,14 @@
 import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { AuthService } from './../../auth.service';
-import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-login-page',
-  templateUrl: './login-page.component.html',
-  styleUrls: ['./login-page.component.scss'],
+  selector: 'app-register-page',
+  templateUrl: './register-page.component.html',
+  styleUrls: ['./register-page.component.scss'],
 })
-export class LoginPageComponent implements OnInit {
+export class RegisterPageComponent implements OnInit {
   email: string;
   password: string;
 
@@ -16,9 +16,9 @@ export class LoginPageComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  login() {
+  register() {
     this.authService
-      .login(this.email, this.password)
+      .register(this.email, this.password)
       .subscribe((res: HttpResponse<any>) => {
         if (res.status == 200) {
           this.router.navigate(['/lists']);

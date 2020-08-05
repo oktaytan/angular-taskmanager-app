@@ -1,14 +1,16 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { HttpClientModule } from "@angular/common/http";
-import { FormsModule } from "@angular/forms";
+import { WebReqInterceptor } from './web-req-interceptor.service';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { TaskViewComponent } from "./pages/task-view/task-view.component";
-import { NewListComponent } from "./pages/new-list/new-list.component";
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { TaskViewComponent } from './pages/task-view/task-view.component';
+import { NewListComponent } from './pages/new-list/new-list.component';
 import { NewTaskComponent } from './pages/new-task/new-task.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { RegisterPageComponent } from './pages/register-page/register-page.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
     NewListComponent,
     NewTaskComponent,
     LoginPageComponent,
+    RegisterPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -25,7 +28,9 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
     FormsModule,
     FormsModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: WebReqInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
