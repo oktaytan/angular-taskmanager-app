@@ -35,6 +35,10 @@
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
 
+  &.noTask {
+    justify-content: center;
+  }
+
   .top-bar {
     margin-bottom: 20px;
     display: flex;
@@ -147,8 +151,20 @@
   }
 }
 
-.empty-state-text {
-  font-size: 20px;
-  color: #777;
-  text-align: center;
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  &.task {
+    height: 100% !important;
+  }
+
+  &-text {
+    font-size: 20px;
+    color: $text;
+    text-align: center;
+  }
 }

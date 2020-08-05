@@ -9,8 +9,10 @@ const { List, Task } = require('../db/models/index.js');
  * Purpose: Get all lists
  */
 router.get('/', (req, res) => {
-	// We want to an array of all the lists in the database
-	List.find({})
+	// We want to an array of all the lists that belong to the authenticated user
+	List.find({
+		_userId: req.user_id,
+	})
 		.then((lists) => {
 			res.status(200).send(lists);
 		})
@@ -33,6 +35,7 @@ router.post('/', (req, res) => {
 
 	let newList = new List({
 		title,
+		_userId: req.user_id,
 	});
 
 	newList
@@ -56,7 +59,7 @@ router.post('/', (req, res) => {
 router.patch('/:id', (req, res) => {
 	// We want to update the specified list with the new values
 	List.findOneAndUpdate(
-		{ _id: req.params.id },
+		{ _id: req.params.id, _userId: req.user_id },
 		{
 			$set: req.body,
 		}
@@ -80,9 +83,13 @@ router.delete('/:id', (req, res) => {
 	// We want to delete the specified list
 	List.findOneAndRemove({
 		_id: req.params.id,
+		_userId: req.user_id,
 	})
 		.then((removedList) => {
 			res.json(removedList);
+
+			// delete all the tasks that are in the deleted list
+			deleteTasksFromList(removedList._id);
 		})
 		.catch((err) => {
 			res.status(500).send({
@@ -118,21 +125,33 @@ router.get('/:listId/tasks', (req, res) => {
  */
 router.post('/:listId/tasks', (req, res) => {
 	// We want to create a new task in a list specified by listId
-	let newTask = new Task({
-		title: req.body.title,
-		_listId: req.params.listId,
-	});
 
-	newTask
-		.save()
-		.then((newTaskDoc) => {
-			res.status(201).json(newTaskDoc);
+	List.findOne({
+		_id: req.params.listId,
+		_userId: req.user_id,
+	})
+		.then((list) => {
+			if (list) {
+				// list object with the specified conditions was found
+				// therefore the currently authenticated user can create new tasks
+				return true;
+			}
+
+			// else - the list object is undefined
+			return false;
 		})
-		.catch((err) => {
-			res.status(500).send({
-				success: false,
-				msg: err,
-			});
+		.then((canCreateTask) => {
+			if (canCreateTask) {
+				let newTask = new Task({
+					title: req.body.title,
+					_listId: req.params.listId,
+				});
+				newTask.save().then((newTaskDoc) => {
+					res.send(newTaskDoc);
+				});
+			} else {
+				res.sendStatus(404);
+			}
 		});
 });
 
@@ -142,24 +161,37 @@ router.post('/:listId/tasks', (req, res) => {
  */
 router.patch('/:listId/tasks/:taskId', (req, res) => {
 	// We want to update an existing task (specified by taskId)
+	List.findOne({
+		_id: req.params.listId,
+		_userId: req.user_id,
+	})
+		.then((list) => {
+			if (list) {
+				// list object with the specified conditions was found
+				// therefore the currently authenticated user can make updates to tasks within this list
+				return true;
+			}
 
-	Task.findOneAndUpdate(
-		{
-			_id: req.params.taskId,
-			_listId: req.params.listId,
-		},
-		{
-			$set: req.body,
-		}
-	)
-		.then(() => {
-			res.status(201).json({ success: true, message: 'Updated successfully.' });
+			// else - the list object is undefined
+			return false;
 		})
-		.catch((err) => {
-			res.status(500).send({
-				success: false,
-				msg: err,
-			});
+		.then((canUpdateTasks) => {
+			if (canUpdateTasks) {
+				// the currently authenticated user can update tasks
+				Task.findOneAndUpdate(
+					{
+						_id: req.params.taskId,
+						_listId: req.params.listId,
+					},
+					{
+						$set: req.body,
+					}
+				).then(() => {
+					res.send({ message: 'Updated successfully.' });
+				});
+			} else {
+				res.sendStatus(404);
+			}
 		});
 });
 
@@ -168,18 +200,31 @@ router.patch('/:listId/tasks/:taskId', (req, res) => {
  * Purpose: Delete a task
  */
 router.delete('/:listId/tasks/:taskId', (req, res) => {
-	Task.findOneAndRemove({
-		_id: req.params.taskId,
-		_listId: req.params.listId,
+	List.findOne({
+		_id: req.params.listId,
+		_userId: req.user_id,
 	})
-		.then((removedTaskDoc) => {
-			res.json(removedTaskDoc);
+		.then((list) => {
+			if (list) {
+				// list object with the specified conditions was found
+				// therefore the currently authenticated user can make updates to tasks within this list
+				return true;
+			}
+
+			// else - the list object is undefined
+			return false;
 		})
-		.catch((err) => {
-			res.status(500).send({
-				success: false,
-				msg: err,
-			});
+		.then((canDeleteTasks) => {
+			if (canDeleteTasks) {
+				Task.findOneAndRemove({
+					_id: req.params.taskId,
+					_listId: req.params.listId,
+				}).then((removedTaskDoc) => {
+					res.send(removedTaskDoc);
+				});
+			} else {
+				res.sendStatus(404);
+			}
 		});
 });
 

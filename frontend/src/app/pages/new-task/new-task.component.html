@@ -7,12 +7,12 @@
     <form #taskForm="ngForm" (ngSubmit)="createTask()">
       <input [(ngModel)]="title" minlength="1" name="title" required class="input has-background-light is-medium"
         type="text" placeholder="Enter new task..." autocomplete="off">
+      <br><br>
+      <div class="buttons is-right">
+        <button class="button is-text has-text-danger" routerLink="">Cancel</button>
+        <button class="button is-primary has-text-white" type="submit" [disabled]="!taskForm.valid">Create</button>
+      </div>
     </form>
-    <br>
-    <div class="buttons is-right">
-      <button class="button is-text has-text-danger" routerLink="">Cancel</button>
-      <button class="button is-primary has-text-white" type="submit" [disabled]="!taskForm.valid">Create</button>
-    </div>
 
 
   </div>
