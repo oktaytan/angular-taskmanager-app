@@ -25,6 +25,27 @@ router.get('/', (req, res) => {
 });
 
 /**
+ * GET /lists/:d
+ * Purpose: Get the list by id
+ */
+router.get('/:id', (req, res) => {
+	// We want to an array of all the lists that belong to the authenticated user
+	List.findOne({
+		_userId: req.user_id,
+		_id: req.params.id,
+	})
+		.then((list) => {
+			res.status(200).send(list);
+		})
+		.catch((err) => {
+			res.status(500).send({
+				success: false,
+				msg: err,
+			});
+		});
+});
+
+/**
  * POST /lists
  * Purpose: Create a list
  */
@@ -42,7 +63,7 @@ router.post('/', (req, res) => {
 		.save()
 		.then((listDoc) => {
 			// The full list document is returned
-			res.status(201).json(listDoc);
+			res.status(201).send(listDoc);
 		})
 		.catch((err) => {
 			res.status(500).send({
@@ -65,7 +86,7 @@ router.patch('/:id', (req, res) => {
 		}
 	)
 		.then(() => {
-			res.sendStatus(200);
+			res.send({ message: 'Updated successfully.' });
 		})
 		.catch((err) => {
 			res.status(500).send({
@@ -86,7 +107,7 @@ router.delete('/:id', (req, res) => {
 		_userId: req.user_id,
 	})
 		.then((removedList) => {
-			res.json(removedList);
+			res.send(removedList);
 
 			// delete all the tasks that are in the deleted list
 			deleteTasksFromList(removedList._id);
@@ -110,6 +131,26 @@ router.get('/:listId/tasks', (req, res) => {
 	})
 		.then((tasks) => {
 			res.send(tasks);
+		})
+		.catch((err) => {
+			res.status(500).send({
+				success: false,
+				msg: err,
+			});
+		});
+});
+
+/**
+ * GET /lists/:listId/tasks/:taskId
+ * Purpose: Get the task by id in a specific list
+ */
+router.get('/:listId/tasks/:taskId', (req, res) => {
+	Task.findOne({
+		_listId: req.params.listId,
+		_id: req.params.taskId,
+	})
+		.then((task) => {
+			res.send(task);
 		})
 		.catch((err) => {
 			res.status(500).send({

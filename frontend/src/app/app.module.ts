@@ -11,6 +11,9 @@ import { NewListComponent } from './pages/new-list/new-list.component';
 import { NewTaskComponent } from './pages/new-task/new-task.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { RegisterPageComponent } from './pages/register-page/register-page.component';
+import { EditListComponent } from './pages/edit-list/edit-list.component';
+import { EditTaskComponent } from './pages/edit-task/edit-task.component';
+import { HeaderComponent } from './layout/header/header.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +23,9 @@ import { RegisterPageComponent } from './pages/register-page/register-page.compo
     NewTaskComponent,
     LoginPageComponent,
     RegisterPageComponent,
+    EditListComponent,
+    EditTaskComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,

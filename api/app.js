@@ -11,8 +11,8 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
 // CORS HEADERS MIDDLEWARE
+app.use(cors());
 app.use(function (req, res, next) {
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header(

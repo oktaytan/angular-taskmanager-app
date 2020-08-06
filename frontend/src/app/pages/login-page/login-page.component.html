@@ -20,14 +20,15 @@
       </div>
       <div class="field is-pulled-right">
         <p class="control">
-          <button class="button is-text has-text-success" type="button" routerLink="/register">
-            Register
-          </button>
           <button class="button is-primary has-text-light" type="submit" [disabled]="!loginForm.valid">
             Login
           </button>
         </p>
       </div>
     </form>
+  </div>
+
+  <div class="register-or-login">
+    <p>Not got an account? <br> You can <a class="is-text has-text-primary" routerLink="/register">register now!</a></p>
   </div>
 </div>

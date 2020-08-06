@@ -1,3 +1,4 @@
+<app-header></app-header>
 <div class="centered-content">
   <div class="task-manager-container">
 
@@ -19,14 +20,49 @@
 
     <div class="task-list-container" [ngClass]="tasks && tasks.length === 0 ? 'noTask' : ''">
       <div *ngIf="tasks">
-        <h1 class="title has-text-primary" *ngIf="tasks && tasks.length > 0">
-          Tasks
-        </h1>
+        <div class="top-bar">
+          <h1 class="title has-text-primary">
+            Tasks
+          </h1>
+
+          <div class="dropdown is-hoverable is-right">
+            <div class="dropdown-trigger">
+              <button class="button has-text-primary" aria-haspopup="true" aria-controls="dropdown-menu4">
+                <span class="icon is-small">
+                  <i class="fas fa-cog" aria-hidden="true"></i>
+                </span>
+              </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+              <div class="dropdown-content">
+                <a [routerLink]="['/edit-list/', selectedListId]" class="dropdown-item has-text-primary">
+                  Edit
+                </a>
+                <a (click)="onDeleteLists()" class="dropdown-item has-text-danger">
+                  Delete
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Tasks -->
         <div class="task" *ngFor="let task of tasks" (click)="onTaskClick(task)"
           [ngClass]="{completed: task.completed}">
           <p class="task-text">{{ task.title }}</p>
+          <div class="task-buttons">
+            <button class="button is-primary is-outlined is-small"
+              [routerLink]="['/lists', selectedListId, 'edit-task', task._id]">
+              <div class="icon">
+                <i class="fas fa-edit"></i>
+              </div>
+            </button>
+            <button class="button is-danger is-outlined is-small" (click)="onTaskDelete(task._id)">
+              <div class="icon">
+                <i class="fas fa-trash"></i>
+              </div>
+            </button>
+          </div>
         </div>
 
         <div *ngIf="tasks && tasks.length === 0" class="empty-state">

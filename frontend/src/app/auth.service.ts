@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpResponse,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { WebRequestService } from './web-request.service';
 import { Router } from '@angular/router';
-import { shareReplay, tap } from 'rxjs/operators';
+import { shareReplay, tap, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +49,6 @@ export class AuthService {
 
   logout() {
     this.removeSession();
-
     this.router.navigate(['/login']);
   }
 
